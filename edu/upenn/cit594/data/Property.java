@@ -1,25 +1,25 @@
 package edu.upenn.cit594.data;
 
 public class Property{
-	int marketValue;
-	int totalLivableArea;
-	int zipCode;
+	double marketValue;
+	double totalLivableArea;
+	double zipCode;
 	
-	public Property(int marketValue, int totalLivableArea, int zipCode) {
-		this.marketValue = marketValue;
-		this.totalLivableArea = totalLivableArea;
-		this.zipCode = zipCode;
+	public Property(double d, double e, double f) {
+		this.marketValue = d;
+		this.totalLivableArea = e;
+		this.zipCode = f;
 	}
 
-	public int getMarketValue() {
+	public double getMarketValue() {
 		return marketValue;
 	}
 
-	public int getTotalLivableArea() {
+	public double getTotalLivableArea() {
 		return totalLivableArea;
 	}
 
-	public int getZipCode() {
+	public double getZipCode() {
 		return zipCode;
 	}
 
