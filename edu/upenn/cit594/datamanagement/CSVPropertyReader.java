@@ -50,8 +50,8 @@ protected String propertyFileName;
 					!isNumber(zipCode) || zipCode.length() < 5) {
 					continue;
 				}
-				values.add(new Property(Integer.parseInt(marketValue), Integer.parseInt(totalLivableArea), 
-						                Integer.parseInt(zipCode.substring(0, 5))));
+				values.add(new Property(Double.parseDouble(marketValue), Double.parseDouble(totalLivableArea), 
+						                Double.parseDouble(zipCode.substring(0, 5))));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
