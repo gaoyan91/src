@@ -26,6 +26,7 @@ protected String propertyFileName;
 			int marketValInd = 0;
 			int livableAreaInd = 0;
 			int zipCodeInd = 0;
+			int numOfRoomsInd = 0;
 			if (in.hasNextLine()) {
 				String headLine = in.nextLine();
 				String[] fields = headLine.split(",(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
@@ -36,6 +37,8 @@ protected String propertyFileName;
 					    livableAreaInd = i;
 					} else if (fields[i].equals("zip_code")) {
 						zipCodeInd = i;
+					} else if (fields[i].equals("number_of_rooms")) {
+						numOfRoomsInd = i;
 					}
 				}
 				
@@ -43,15 +46,16 @@ protected String propertyFileName;
 			while (in.hasNext()) {
 				String valueInfo = in.nextLine();
 				String[] value = valueInfo.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+				String numOfRooms = value[numOfRoomsInd];
 				String marketValue = value[marketValInd];
 				String totalLivableArea = value[livableAreaInd];
 				String zipCode = value[zipCodeInd];
 				if (!isNumber(marketValue) || !isNumber(totalLivableArea) || 
-					!isNumber(zipCode) || zipCode.length() < 5) {
+					!isNumber(zipCode) || zipCode.length() < 5 || !isNumber(numOfRooms)) {
 					continue;
 				}
 				values.add(new Property(Double.parseDouble(marketValue), Double.parseDouble(totalLivableArea), 
-						                Double.parseDouble(zipCode.substring(0, 5))));
+						                Double.parseDouble(zipCode.substring(0, 5)), Integer.parseInt(numOfRooms)));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

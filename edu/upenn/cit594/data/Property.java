@@ -4,11 +4,13 @@ public class Property{
 	double marketValue;
 	double totalLivableArea;
 	double zipCode;
+	int numberOfRoom;
 	
-	public Property(double d, double e, double f) {
+	public Property(double d, double e, double f, int numberOfRoom) {
 		this.marketValue = d;
 		this.totalLivableArea = e;
 		this.zipCode = f;
+		this.numberOfRoom = numberOfRoom;
 	}
 
 	public double getMarketValue() {
@@ -21,6 +23,10 @@ public class Property{
 
 	public double getZipCode() {
 		return zipCode;
+	}
+
+	public int getNumberOfRoom() {
+		return numberOfRoom;
 	}
 
 	
