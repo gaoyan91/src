@@ -3,14 +3,12 @@ package edu.upenn.cit594.data;
 public class Property{
 	double marketValue;
 	double totalLivableArea;
-	double zipCode;
-	int numberOfRoom;
+	String zipCode;
 	
-	public Property(double d, double e, double f, int numberOfRoom) {
-		this.marketValue = d;
-		this.totalLivableArea = e;
-		this.zipCode = f;
-		this.numberOfRoom = numberOfRoom;
+	public Property(double mv, double la, String zc) {
+		this.marketValue = mv;
+		this.totalLivableArea = la;
+		this.zipCode = zc;
 	}
 
 	public double getMarketValue() {
@@ -21,12 +19,8 @@ public class Property{
 		return totalLivableArea;
 	}
 
-	public double getZipCode() {
+	public String getZipCode() {
 		return zipCode;
-	}
-
-	public int getNumberOfRoom() {
-		return numberOfRoom;
 	}
 
 	

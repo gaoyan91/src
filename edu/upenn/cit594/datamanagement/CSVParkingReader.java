@@ -37,7 +37,7 @@ protected String parkingFileName;
 					|| zipCode.length() < 5) {
 					continue;
 				}
-				violations.add(new ParkingViolation(Integer.parseInt(fine), state, Integer.parseInt(zipCode)));
+				violations.add(new ParkingViolation(Integer.parseInt(fine), state, zipCode));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

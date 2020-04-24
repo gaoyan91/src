@@ -32,7 +32,7 @@ protected String parkingFileName;
 				JSONObject jo = (JSONObject) array.get(i);
 				String state = (String) jo.get("state");
 				int fine = (int) jo.get("fine");
-				int zipCode = (int) jo.get("zip_code");
+				String zipCode = (String) jo.get("zip_code");
 				violations.add(new ParkingViolation(fine, state, zipCode));
 
 			}

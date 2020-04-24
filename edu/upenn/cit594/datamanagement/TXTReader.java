@@ -12,8 +12,8 @@ public class TXTReader extends Reader{
 	}
 	
 	@Override
-	public Map<Integer, Integer> read() {
-		Map<Integer, Integer> population = new HashMap<>();
+	public Map<String, Integer> read() {
+		Map<String, Integer> population = new HashMap<>();
 		try {
 			Scanner in = new Scanner(new File(popFileName));
 			while (in.hasNext()) {
@@ -25,7 +25,7 @@ public class TXTReader extends Reader{
 					|| zipCode.length() < 5) {
 					continue;
 				}
-				population.put(Integer.parseInt(zipCode), Integer.parseInt(pop));
+				population.put(zipCode, Integer.parseInt(pop));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);
