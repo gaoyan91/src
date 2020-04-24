@@ -42,7 +42,7 @@ public class Processor {
 
 	}
 
-	public int getTotalPop() {
+	public int getTotalPop() { // 1
 		int totalPop = 0;
 		for (Entry<Integer, Integer> entry : popMap.entrySet()) {
 			totalPop += entry.getValue();
@@ -50,7 +50,7 @@ public class Processor {
 		return totalPop;
 	}
 
-	public void getFinePerCapita() {
+	public void getFinePerCapita() { // how to use memorization ?
 		Map<Integer, Double> zipFine = new TreeMap<>();
 		for (ParkingViolation p : violations) { // set up fine per zipcode hashmap
 			if (zipFine.containsKey(p.getZipCode())) {
@@ -61,7 +61,6 @@ public class Processor {
 		}
 		DecimalFormat df = new DecimalFormat("0.0000");
 		df.setRoundingMode(RoundingMode.DOWN);
-		System.out.println(df.format(10.23));
 		for (Map.Entry<Integer, Double> each : zipFine.entrySet()) {
 			if (popMap.containsKey(each.getKey())) {
 				int popNumber = popMap.get(each.getKey());
@@ -72,9 +71,10 @@ public class Processor {
 		}
 	}
 
-	public void getAverageMarketValue(Integer zipcode) {  // TODO: use extract function 
+	public int getAverageMarketValue(Integer zipcode) { // TODO: use extract function 3
 		int count = 0;
 		Double totalValue = 0.0;
+		int averageValue = 0;
 		for (Property p : propertyValues) {
 			if (p.getZipCode() == zipcode) {
 				count++;
@@ -84,36 +84,27 @@ public class Processor {
 		if (count == 0) {
 			System.out.println(0);
 		} else {
-			int averageValue = (int)(totalValue / count);
-			System.out.println(averageValue);
-		}
-	}
-	
-	
-	public int getAverageLivableArea(Integer zipcode) {  // TODO: use extract function 
-		int count = 0;
-		Double totalArea = 0.0;
-		int averageValue = 0;
-		for (Property p : propertyValues) {
-			if (p.getZipCode() == zipcode) {
-				count++;
-				totalArea += p.getTotalLivableArea();
-			}
-		}
-		
-		if (count == 0) {
-			System.out.println(averageValue);
-		} else {
-			averageValue = (int)(totalArea / count);
+			averageValue = (int) (totalValue / count);
 			System.out.println(averageValue);
 		}
 		return averageValue;
 	}
-	
-	public void getMarketPerCapita(Integer zipcode) {
-		if(popMap.get(zipcode) != null) {
-			System.out.println(getAverageLivableArea(zipcode) / popMap.get(zipcode));
+
+	public int getAverageLivableArea(Integer zipcode, PropertyLivableAreaLoop propertyLivable) { // TODO: use extract function 4
+		return propertyLivable.loopProperty(propertyValues, zipcode);
+	}
+
+	public double getMarketPerCapita(Integer zipcode) { // 5
+		Double totalArea = 0.0;
+		if (popMap.get(zipcode) != null) {
+			for (Property p : propertyValues) {
+				if (p.getZipCode() == zipcode) {
+					totalArea += p.getTotalLivableArea();
+				}
+			}
+			return totalArea / popMap.get(zipcode);
 		}
+		return totalArea;
 	}
 
 	public static void main(String[] args) {
