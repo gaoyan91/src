@@ -20,7 +20,7 @@ protected String parkingFileName;
 	
 	@Override
 	public List<ParkingViolation> read() {
-		List<ParkingViolation> violations = new ArrayList<>();
+		List<ParkingViolation> violations = new LinkedList<>();
 		JSONParser parser = new JSONParser();
 		
 		try {
