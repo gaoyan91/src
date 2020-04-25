@@ -57,7 +57,7 @@ public class CommandLineUserInterface {
 	
 	private void displayFinePerCapita() {
 		Map<String, Double> map = pro.getFinesPerCapita();
-		System.out.println("Here is the fine per capita");
+		System.out.println("Here is the fine per capita:");
 		DecimalFormat df = new DecimalFormat("0.0000");
 		df.setRoundingMode(RoundingMode.DOWN);
 		for (Entry<String, Double> entry : map.entrySet()) {

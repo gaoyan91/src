@@ -43,7 +43,7 @@ public class Processor {
 		this.cachedFinePerCapita = new TreeMap<>();
 		this.cachedAverageMarketValue = new HashMap<>();
 		this.cachedAverageLivableArea = new HashMap<>();
-		this.cachedMarketValPerCapita = new HashMap();
+		this.cachedMarketValPerCapita = new HashMap<>();
 		
 		//this.logger = Logger.getInstance();
 	
