@@ -27,18 +27,18 @@ public class Processor {
 	public Processor(String parkingFileFormat, String parkingFileName, String propertyFileName, String popFileName,
 			String logFileName) {
 		ReaderFactory rf = new ReaderFactory();
-		this.parkingReader = rf.getReader(parkingFileFormat, parkingFileName);
-		this.propertyReader = rf.getPropertyReader(propertyFileName);
-		this.popReader = rf.getPopReader(popFileName);
-		this.violations = (List<ParkingViolation>) parkingReader.read();
+		parkingReader = rf.getReader(parkingFileFormat, parkingFileName);
+		propertyReader = rf.getPropertyReader(propertyFileName);
+		popReader = rf.getPopReader(popFileName);
+		violations = (List<ParkingViolation>) parkingReader.read();
 //		for (ParkingViolation p : violations) {
 //			System.out.println(p.getFine() + " " + p.getState() + " " + p.getZipCode());
 //		}
-		this.propertyValues = (List<Property>) propertyReader.read();
+		propertyValues = (List<Property>) propertyReader.read();
 //		for (int i = 0; i <  propertyValues.size(); i++) {
 //			System.out.println(propertyValues.get(i).getMarketValue() + " " + propertyValues.get(i).getTotalLivableArea() + " " + propertyValues.get(i).getZipCode());
 //		}
-		this.popMap = (Map<String, Integer>) popReader.read();
+		popMap = (Map<String, Integer>) popReader.read();
 		cachedTotalPop = -1;
 		cachedFinePerCapita = new TreeMap<>();
 		cachedAverageMarketValue = new HashMap<>();
@@ -85,11 +85,9 @@ public class Processor {
 			if (fine == 0 || !popMap.containsKey(zip) || popMap.get(zip) == 0) {
 				continue;
 			}
-			if (popMap.containsKey(entry.getKey())) {
-				int pop = popMap.get(zip);
-				double ave = fine / pop;
-				zipFinePerCapita.put(zip, ave);
-			}
+			int pop = popMap.get(zip);
+			double ave = fine / pop;
+			zipFinePerCapita.put(zip, ave);
 		}
 		cachedFinePerCapita = new TreeMap<>(zipFinePerCapita);
 		return zipFinePerCapita;
@@ -97,7 +95,6 @@ public class Processor {
 
 	public int getAverageMarketValue(String zipCode) {
 		if (cachedAverageMarketValue.containsKey(zipCode)) {
-			System.out.println("i am here");
 			return cachedAverageMarketValue.get(zipCode);
 		}
 		int aveValue = getAverageValue(zipCode, new MarketValProcessor());
@@ -182,9 +179,9 @@ public class Processor {
 
 	public static void main(String[] args) {
 //		// TODO Auto-generated method stub
-//		Processor p = new Processor("csv", "parking.csv", "pp.csv", "population.txt", "log.txt");
-////		System.out.print(p.getTotalPop());
-////		System.out.print(p.getFinesPerCapita());
+		Processor p = new Processor("csv", "parking.csv", "pp.csv", "population.txt", "log.txt");
+		System.out.print(p.getTotalPop());
+		System.out.print(p.getFinesPerCapita());
 //		System.out.println(p.getAverageMarketValue("19148"));
 //		System.out.println(p.getAverageMarketValue("19148"));
 //		System.out.println(p.getMarketValPerCapita("19148"));
