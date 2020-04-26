@@ -1,7 +1,7 @@
 package edu.upenn.cit594.datamanagement;
 
 import java.io.FileReader;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -24,17 +24,18 @@ protected String parkingFileName;
 		JSONParser parser = new JSONParser();
 		
 		try {
-			Object obj  = parser.parse(new FileReader(parkingFileName));
+			Object obj = parser.parse(new FileReader(parkingFileName));
+			logger.logString(parkingFileName);
 			JSONArray joArray = new JSONArray();
 			joArray.add(obj);
 			JSONArray array = (JSONArray) joArray.get(0);
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject jo = (JSONObject) array.get(i);
 				String state = (String) jo.get("state");
-				int fine = (int) jo.get("fine");
+				long fineNumber = (Long)jo.get("fine");
+				int fine = (int)fineNumber;
 				String zipCode = (String) jo.get("zip_code");
 				violations.add(new ParkingViolation(fine, state, zipCode));
-
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException("File Not Found Or Cannot Read");

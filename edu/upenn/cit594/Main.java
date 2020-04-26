@@ -20,10 +20,11 @@ public class Main {
 		String propertyFileName = args[2];
 		String popFileName = args[3];
 		String logFileName = args[4];
-		Processor processor = new Processor(parkingFileFormat, parkingFileName, propertyFileName, popFileName, logFileName);
 		Logger.setFileName(logFileName);
 		Logger logger = Logger.getLogger();
+		logger.logString(args);
+		Processor processor = new Processor(parkingFileFormat, parkingFileName, propertyFileName, popFileName);
 		CommandLineUserInterface ui = new CommandLineUserInterface(processor, logger);
-		ui.start(args);
+		ui.start();
 	}
 }

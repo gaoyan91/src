@@ -1,6 +1,9 @@
 package edu.upenn.cit594.datamanagement;
 
+import edu.upenn.cit594.logging.Logger;
+
 public abstract class Reader {
+	Logger logger = Logger.getLogger();
 
 	public abstract Object read();
 	

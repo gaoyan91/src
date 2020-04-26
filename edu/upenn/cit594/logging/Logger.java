@@ -1,30 +1,31 @@
 package edu.upenn.cit594.logging;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Logger {
 
 	private static PrintWriter out;
-	private static File file;
-	private static Logger logger = null;
-
-	public static void setFileName(String fileName) {
+	private static String logFileName;
+	private static Logger instance = null;
+	
+	private Logger(String fileName) {
 		try {
-			out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
-		} catch (IOException e) {
-			e.printStackTrace();
+			out = new PrintWriter(new File(fileName));
+		} catch (Exception e){
+			throw new IllegalStateException(e);
 		}
+	}
+	
+	public static void setFileName(String name) {
+		logFileName = name;
 	}
 
 	public static Logger getLogger() {
-		if (logger == null) {
-			logger = new Logger();
+		if (instance == null) {
+			instance = new Logger(logFileName);
 		}
-		return logger;
+		return instance;
 	}
 
 	public void log(String msg) {
@@ -53,12 +54,5 @@ public class Logger {
 		line += System.currentTimeMillis();
 		line += (" " + Integer.toString(number));
 		log(line);
-	}
-
-	public static void main(String[] args) {
-		Logger.setFileName("newfile.txt");
-		Logger l = Logger.getLogger();
-		l.log("asdfasdf");
-		l.logString(args);
 	}
 }

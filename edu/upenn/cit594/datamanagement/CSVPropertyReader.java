@@ -19,6 +19,7 @@ protected String propertyFileName;
 		Scanner in = null;
 		try {
 			File file = new File(propertyFileName);
+			logger.logString(propertyFileName);
 			if (!file.exists() || !file.canRead()) {
 				throw new Exception("File Not Found Or Cannot Read");
 			}

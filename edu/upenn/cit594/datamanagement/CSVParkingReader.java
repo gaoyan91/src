@@ -20,6 +20,7 @@ protected String parkingFileName;
 		Scanner in = null;
 		try {
 			File file = new File(parkingFileName);
+			logger.logString(parkingFileName);
 			if (!file.exists() || !file.canRead()) {
 				throw new Exception("File Not Found Or Cannot Read");
 			}

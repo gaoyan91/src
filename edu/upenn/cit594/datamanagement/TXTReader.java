@@ -16,6 +16,7 @@ public class TXTReader extends Reader{
 		Map<String, Integer> population = new HashMap<>();
 		try {
 			Scanner in = new Scanner(new File(popFileName));
+			logger.logString(popFileName);
 			while (in.hasNext()) {
 				String next = in.nextLine();
 				String[] popData = next.split(" ");

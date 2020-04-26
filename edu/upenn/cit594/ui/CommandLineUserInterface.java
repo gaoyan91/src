@@ -18,17 +18,16 @@ public class CommandLineUserInterface {
 		this.logger = logger;
 	}
 
-	public void start(String[] args) {
-		String string;
+	public void start() {
+		String actionString;
 		try {
-			this.logger.logString(args);
 			while (true) {
 				System.out.println("Please specify the action to be performed");
 				Scanner in = new Scanner(System.in);
 				if (in.hasNext()) {
-					string = in.next();
-					this.logger.logString(string);
-					int action = Integer.parseInt(string);  // TODO: check is numeric and integer; what if is string or non-int
+					actionString = in.next();
+					logger.logString(actionString);
+					int action = Integer.parseInt(actionString);  // TODO: check is numeric and integer; what if is string or non-int
 					if (action < 0 || action > 6) {
 						System.out.println("Invalid action");
 						System.exit(0);
@@ -53,7 +52,7 @@ public class CommandLineUserInterface {
 							displayMarketValuePerCapita();
 							break;
 						case 6:
-							displayLivableAreaPerCapitaOfMaxFineArea();
+							displayFineofMinLivableAreaPerCapitaZipCode();
 							break;
 					}
 				}
@@ -65,7 +64,7 @@ public class CommandLineUserInterface {
 	}
 	
 	private void displayTotalpop() {
-		System.out.println("Here is the total population: " + this.processor.getTotalPop());
+		System.out.println("Here is the total population: " + processor.getTotalPop());
 	}
 	
 	private void displayFinePerCapita() {
@@ -80,23 +79,25 @@ public class CommandLineUserInterface {
 	
 	private void displayAveMarketValue() {
 		String zip = requestZipCode();
-		System.out.println("Here is the average market value: " + this.processor.getAverageMarketValue(zip));
+		logger.logString(zip);
+		System.out.println("Here is the average market value: " + processor.getAverageMarketValue(zip));
 		
 	}
 	
 	private void displayAveLivableArea() {
 		String zip = requestZipCode();
-		System.out.println("Here is the average livable area: " + this.processor.getAverageLivableArea(zip));
+		logger.logString(zip);
+		System.out.println("Here is the average livable area: " + processor.getAverageLivableArea(zip));
 	}
 	
 	private void displayMarketValuePerCapita() {
 		String zip = requestZipCode();
-		int a = this.processor.getMarketValPerCapita(zip);
-		System.out.println("Here is the average market value per capita: " + this.processor.getMarketValPerCapita(zip));
+        logger.logString(zip);
+		System.out.println("Here is the average market value per capita: " + processor.getMarketValPerCapita(zip));
 	}
 	
-	private void displayLivableAreaPerCapitaOfMaxFineArea() {
-		System.out.println("Total livable area per capita where has the highest fine per capita is: "+this.processor.getLivableAreaPerCapitaOfMaxFineArea());
+	private void displayFineofMinLivableAreaPerCapitaZipCode() {
+		System.out.println("Here is the total fine of max livable area per capita ZIP Code: "+ processor.getFineofMinLivableAreaPerCapitaZipCode());
 	}
 	
 	private String requestZipCode() {
