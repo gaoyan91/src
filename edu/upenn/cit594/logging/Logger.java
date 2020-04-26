@@ -36,7 +36,6 @@ public class Logger {
 		String line = "";
 		line += System.currentTimeMillis();
 		for (String each : args) {
-			
 			line += (" " + each);
 		}
 		log(line);
@@ -56,8 +55,6 @@ public class Logger {
 		log(line);
 	}
 
-	// Additionally, you must use the Singleton design pattern to implement the
-	// logging functionality.
 	public static void main(String[] args) {
 		Logger.setFileName("newfile.txt");
 		Logger l = Logger.getLogger();

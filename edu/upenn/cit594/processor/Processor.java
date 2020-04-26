@@ -1,7 +1,5 @@
 package edu.upenn.cit594.processor;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -15,10 +13,15 @@ public class Processor {
 	private Reader popReader;
 	private List<ParkingViolation> violations;
 	private List<Property> propertyValues;
-	private Map<Integer, Integer> popMap;
-	private Map<String, Integer> intResults = new HashMap<>(); // TODO: need UI to Print interger not double
-	private Map<String, Map> resultsMap = new HashMap<>();
-	private Map<String, Integer> doubleResults = new HashMap<>(); // TODO: Maybe simplified?
+	private Map<String, Integer> popMap;
+
+	private int cachedTotalPop;
+	private Map<String, Double> cachedFinePerCapita;
+	private Map<String, Integer> cachedAverageMarketValue;
+	private Map<String, Integer> cachedAverageLivableArea;
+	private Map<String, Integer> cachedMarketValPerCapita;
+	private double cachedLivableAreaPerCapitaOfMaxFineArea;
+
 	// Logger logger;
 
 	public Processor(String parkingFileFormat, String parkingFileName, String propertyFileName, String popFileName,
@@ -29,144 +32,134 @@ public class Processor {
 		this.popReader = rf.getPopReader(popFileName);
 		this.violations = (List<ParkingViolation>) parkingReader.read();
 //		for (ParkingViolation p : violations) {
-//			 System.out.println(p.getFine() + " " + p.getState() + " " + p.getZipCode());
+//			System.out.println(p.getFine() + " " + p.getState() + " " + p.getZipCode());
 //		}
 		this.propertyValues = (List<Property>) propertyReader.read();
-//		for (Property p : propertyValues) {
-//			System.out.println(p.getMarketValue() + " " + p.getTotalLivableArea() + " " +
-//			p.getZipCode());
+//		for (int i = 0; i <  propertyValues.size(); i++) {
+//			System.out.println(propertyValues.get(i).getMarketValue() + " " + propertyValues.get(i).getTotalLivableArea() + " " + propertyValues.get(i).getZipCode());
 //		}
-		this.popMap = (Map<Integer, Integer>) popReader.read();
+		this.popMap = (Map<String, Integer>) popReader.read();
+		cachedTotalPop = -1;
+		cachedFinePerCapita = new TreeMap<>();
+		cachedAverageMarketValue = new HashMap<>();
+		cachedAverageLivableArea = new HashMap<>();
+		cachedMarketValPerCapita = new HashMap<>();
+		cachedLivableAreaPerCapitaOfMaxFineArea = -0.1;
 		// this.logger = Logger.getInstance();
 
 	}
 
-	public void process() { // TODO: delete ?
-
-	}
-
-	public int getTotalPop() { // 1, TODO:
-		if (intResults.containsKey("1")) {
-			return intResults.get("1");
-		} else {
-			int totalPop = 0;
-			for (Entry<Integer, Integer> entry : popMap.entrySet()) {
-				totalPop += entry.getValue();
-			}
-			intResults.put("1", totalPop);
-			return totalPop;
+	public int getTotalPop() {
+		if (cachedTotalPop > 0) {
+			return cachedTotalPop;
 		}
-	}
-
-	public Map getFinePerCapita() {
-		if (resultsMap.containsKey("2")) {
-			return resultsMap.get("2");
-		} else {
-			Map<Integer, Double> zipFine = new TreeMap<>();
-			for (ParkingViolation p : violations) { // set up fine per zipcode hashmap
-				if (zipFine.containsKey(p.getZipCode())) {
-					zipFine.put(p.getZipCode(), zipFine.get(p.getZipCode()) + (double) p.getFine());
-				} else {
-					zipFine.put(p.getZipCode(), (double) p.getFine());
-				}
-			}
-//			DecimalFormat df = new DecimalFormat("0.0000"); // move these code to UI ?
-//			df.setRoundingMode(RoundingMode.DOWN);
-//			for (Map.Entry<Integer, Double> each : zipFine.entrySet()) {
-//				if (popMap.containsKey(each.getKey())) {
-//					int popNumber = popMap.get(each.getKey());
-//					each.setValue(each.getValue() / popNumber);
-//					System.out.println(each.getKey() + "\t" + each.getValue() + "\t" + df.format(each.getValue())); // format
-//				}
-//			}
-			resultsMap.put("2", zipFine);
-			return zipFine;
+		int totalPop = 0;
+		for (Entry<String, Integer> entry : popMap.entrySet()) {
+			totalPop += entry.getValue();
 		}
+		cachedTotalPop = totalPop;
+		return totalPop;
 	}
 
-	public int getAverageMarketValue(Integer zipcode) { // TODO: use extract function 3
-		if (intResults.containsKey("3")) {
-			return intResults.get("3");
-		} else {
-			int count = 0;
-			Double totalValue = 0.0;
-			int averageValue = 0;
-			for (Property p : propertyValues) {
-				if (p.getZipCode() == zipcode) {
-					count++;
-					totalValue += p.getMarketValue();
-				}
+	public Map<String, Double> getFinesPerCapita() {
+		if (!cachedFinePerCapita.isEmpty()) {
+			return cachedFinePerCapita;
+		}
+		Map<String, Double> zipFine = new TreeMap<>();
+		Map<String, Double> zipFinePerCapita = new TreeMap<>();
+		for (ParkingViolation p : violations) {
+			if (!p.getState().equals("PA")) {
+				continue;
 			}
-			if (count == 0) {
-				System.out.println(0);
+			String zip = p.getZipCode();
+			int fine = p.getFine();
+			if (zipFine.containsKey(zip)) {
+				zipFine.put(zip, zipFine.get(zip) + fine);
 			} else {
-				averageValue = (int) (totalValue / count);
-				System.out.println(averageValue);
+				zipFine.put(zip, (double) fine);
 			}
-			intResults.put("3", averageValue);
-			return averageValue;
 		}
+		for (Entry<String, Double> entry : zipFine.entrySet()) {
+			String zip = entry.getKey();
+			double fine = entry.getValue();
+			if (fine == 0 || !popMap.containsKey(zip) || popMap.get(zip) == 0) {
+				continue;
+			}
+			if (popMap.containsKey(entry.getKey())) {
+				int pop = popMap.get(zip);
+				double ave = fine / pop;
+				zipFinePerCapita.put(zip, ave);
+			}
+		}
+		cachedFinePerCapita = new TreeMap<>(zipFinePerCapita);
+		return zipFinePerCapita;
 	}
 
-	public int getAverageLivableArea(Integer zipcode) { // TODO: use extract// function 4
-		if (intResults.containsKey("4")) {
-			return intResults.get("4");
-		} else {
-			int count = 0;
-			Double totalArea = 0.0;
-			int averageValue = 0;
-			for (Property p : propertyValues) {
-				if (p.getZipCode() == zipcode) {
-					count++;
-					totalArea += p.getTotalLivableArea();
-				}
-			}
-			if (count == 0) {
-				System.out.println(averageValue);
-			} else {
-				averageValue = (int) (totalArea / count);
-				System.out.println(averageValue);
-			}
-			intResults.put("4", averageValue);
-			return averageValue;
+	public int getAverageMarketValue(String zipCode) {
+		if (cachedAverageMarketValue.containsKey(zipCode)) {
+			System.out.println("i am here");
+			return cachedAverageMarketValue.get(zipCode);
 		}
+		int aveValue = getAverageValue(zipCode, new MarketValProcessor());
+		cachedAverageMarketValue.put(zipCode, aveValue);
+		return aveValue;
 	}
 
-	public int getMarketPerCapita(Integer zipcode) { // 5 check truncated
-		if (intResults.containsKey("5")) {
-			return intResults.get("5");
-		} else {
-			int popInZip;
-			int valueInZipcode;
-			int totalValue = 0;
-			if (popMap.get(zipcode) != null) {
-				popInZip = popMap.get(zipcode);
-				for (Property p : propertyValues) {
-					if (p.getZipCode() == zipcode) {
-						totalValue += p.getMarketValue();
-					}
-				}
-				valueInZipcode = totalValue / popInZip;
-			} else {
-				valueInZipcode = 0;
-			}
-			intResults.put("5", valueInZipcode);
-			return valueInZipcode;
+	public int getAverageLivableArea(String zipCode) {
+		if (cachedAverageLivableArea.containsKey(zipCode)) {
+			return cachedAverageLivableArea.get(zipCode);
 		}
+		int aveArea = getAverageValue(zipCode, new LivableAreaProcessor());
+		cachedAverageLivableArea.put(zipCode, aveArea);
+		return aveArea;
 	}
 
+	private int getAverageValue(String zipCode, TotalValProcessor pro) {
+		int totalVal = 0;
+		int count = 0;
+		for (Property p : propertyValues) {
+			if (p.getZipCode().contentEquals(zipCode)) {
+				totalVal = pro.getTotalVal(p, totalVal);
+				count++;
+			}
+		}
+		if (count == 0) {
+			return 0;
+		}
+		return totalVal / count;
+	}
+
+	public int getMarketValPerCapita(String zipCode) {
+		if (!popMap.containsKey(zipCode) || popMap.get(zipCode) == 0) {
+			return 0;
+		}
+		if (cachedMarketValPerCapita.containsKey(zipCode)) {
+			return cachedMarketValPerCapita.get(zipCode);
+		}
+		int totalValue = 0;
+		int population = popMap.get(zipCode);
+		for (Property p : propertyValues) {
+			if (p.getZipCode().equals(zipCode)) {
+				totalValue += p.getMarketValue();
+			}
+		}
+		int valuePerCapita = totalValue / population;
+		cachedMarketValPerCapita.put(zipCode, valuePerCapita);
+		return valuePerCapita;
+	}
+	
 	public double getLivableAreaPerCapitaOfMaxFineArea() { // 6: find the total livable area per capita where has the highest fine per capita.
-		if (doubleResults.containsKey("6")) {
-			return doubleResults.get("6");
+		if (cachedLivableAreaPerCapitaOfMaxFineArea >= 0) {
+			return cachedLivableAreaPerCapitaOfMaxFineArea;
 		} else {
 			Double maxFine = Double.NEGATIVE_INFINITY;
-			int maxFineZipcode = 0;
+			String maxFineZipcode = null;
 			int populationInZipcode;
 			int totalLivableArea = 0;
 			double totalLivableAreaPerCapita;
-			Map finesAllZipcode = getFinePerCapita();
-			for(Map.Entry<Integer, Integer> each: popMap.entrySet()) {
-				int zipcode = each.getKey();
+			Map finesAllZipcode = getFinesPerCapita();
+			for(Entry<String, Integer> each: popMap.entrySet()) {
+				String zipcode = each.getKey();
 				if(finesAllZipcode.get(each.getKey()) != null) {
 					Double currentFine = (Double) finesAllZipcode.get(each.getKey());
 					if (currentFine > maxFine) {
@@ -177,26 +170,27 @@ public class Processor {
 			}
 			populationInZipcode = popMap.get(maxFineZipcode);
 			for (Property p : propertyValues) {
-				if (p.getZipCode() == maxFineZipcode) {
+				if (p.getZipCode().equals(maxFineZipcode)) {
 					totalLivableArea += p.getTotalLivableArea();
 				}
 			}
 			totalLivableAreaPerCapita = (double)totalLivableArea / populationInZipcode;
-			System.out.println(totalLivableArea);
-			System.out.println(populationInZipcode);
-			//doubleResults.put("6", totalLivableAreaPerCapita);
+			cachedLivableAreaPerCapitaOfMaxFineArea = totalLivableAreaPerCapita;
 			return totalLivableAreaPerCapita;
 		}
 	}
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Processor p = new Processor("csv", "parking.csv", "pp.csv", "population.txt", "log.txt");
-//		System.out.print(p.getTotalPop());
-//		p.getFinePerCapita();
-//		p.getAverageMarketValue(19148);
-		System.out.println(p.getLivableAreaPerCapitaOfMaxFineArea()); 
-		System.out.println(Integer.parseInt("sss"));
+//		// TODO Auto-generated method stub
+//		Processor p = new Processor("csv", "parking.csv", "pp.csv", "population.txt", "log.txt");
+////		System.out.print(p.getTotalPop());
+////		System.out.print(p.getFinesPerCapita());
+//		System.out.println(p.getAverageMarketValue("19148"));
+//		System.out.println(p.getAverageMarketValue("19148"));
+//		System.out.println(p.getMarketValPerCapita("19148"));
+//		System.out.println(p.getLivableAreaPerCapitaOfMaxFineArea());
+//		System.out.println(p.getLivableAreaPerCapitaOfMaxFineArea());
+//		System.out.println(p.getLivableAreaPerCapitaOfMaxFineArea());
 	}
 
 }
