@@ -15,7 +15,7 @@ public class Processor {
 	private List<Property> propertyValues;
 	private Map<String, Integer> popMap;
 	
-	private int cachedTotalPop;
+	private int cachedTotalPop, cachedLivableAreaPerCapWithMaxFine;
 	private Map<String, Double> cachedFinePerCapita;
 	private Map<String, Integer> cachedAverageMarketValue;
 	private Map<String, Integer> cachedAverageLivableArea;
@@ -44,7 +44,7 @@ public class Processor {
 		this.cachedAverageMarketValue = new HashMap<>();
 		this.cachedAverageLivableArea = new HashMap<>();
 		this.cachedMarketValPerCapita = new HashMap<>();
-		
+		this.cachedLivableAreaPerCapWithMaxFine = -1;
 		//this.logger = Logger.getInstance();
 	
 	}
@@ -83,7 +83,13 @@ public class Processor {
 			String zip = entry.getKey();
 			double fine = entry.getValue();
 			if (fine == 0 || !popMap.containsKey(zip) || popMap.get(zip) == 0) {
-				zipFine.remove(zip);
+				continue;
+			}
+			if (zip == null) {
+				System.out.print(0);
+			}
+			if (popMap == null) {
+				System.out.print(0);
 			}
 			int pop = popMap.get(zip);
 			double ave = fine / pop;
@@ -144,5 +150,33 @@ public class Processor {
 		cachedMarketValPerCapita.put(zipCode, valuePerCapita);
 		return valuePerCapita;
 	}
+	
+	public int getLivableAreaPerCapitaOfMaxFineArea() { 
+		// find the total livable area per capita where has the highest fine per capita.
+			if (cachedLivableAreaPerCapWithMaxFine > 0) {
+				return cachedLivableAreaPerCapWithMaxFine;
+			}
+			Double maxFine = Double.NEGATIVE_INFINITY;
+			String maxFineZipcode = "";
+			int populationInZipcode = 0;
+			int totalLivableArea = 0;
+			Map<String, Double> finesAllZipcode = getFinesPerCapita();
+			for(Map.Entry<String, Double> each: finesAllZipcode.entrySet()) {
+				double fine = each.getValue();
+				if (fine > maxFine) {
+					maxFine = fine;
+					maxFineZipcode = each.getKey();
+				}
+			}
+			if (popMap.get(maxFineZipcode) != null && popMap.get(maxFineZipcode) != 0) {
+				populationInZipcode = popMap.get(maxFineZipcode);
+			}
+			for (Property p : propertyValues) {
+				if (p.getZipCode() == maxFineZipcode) {
+					totalLivableArea += p.getTotalLivableArea();
+				}
+			}
+			return totalLivableArea / populationInZipcode;
+		}
 	
 }

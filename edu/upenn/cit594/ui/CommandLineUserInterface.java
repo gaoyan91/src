@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import edu.upenn.cit594.processor.Processor;
 
+
 public class CommandLineUserInterface {
 	Processor pro;
 	
@@ -42,6 +43,9 @@ public class CommandLineUserInterface {
 						case 5:
 							displayMarketValuePerCapita();
 							break;
+						case 6:
+							displayLivableAreaPerCapMaxFineArea();
+							break;
 					}
 				}
 			}
@@ -57,7 +61,7 @@ public class CommandLineUserInterface {
 	
 	private void displayFinePerCapita() {
 		Map<String, Double> map = pro.getFinesPerCapita();
-		System.out.println("Here is the fine per capita:");
+		System.out.println("Here is the fine per capita");
 		DecimalFormat df = new DecimalFormat("0.0000");
 		df.setRoundingMode(RoundingMode.DOWN);
 		for (Entry<String, Double> entry : map.entrySet()) {
@@ -80,6 +84,10 @@ public class CommandLineUserInterface {
 		String zip = requestZipCode();
 		int a = pro.getMarketValPerCapita(zip);
 		System.out.println("Here is the average market value per capita: " + pro.getMarketValPerCapita(zip));
+	}
+	
+	private void displayLivableAreaPerCapMaxFineArea() {
+		System.out.println("Here is the total livable area per capita in the ZIP Code with highest fine: " + pro.getLivableAreaPerCapitaOfMaxFineArea());
 	}
 	
 	private String requestZipCode() {

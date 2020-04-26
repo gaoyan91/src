@@ -1,8 +1,8 @@
 package edu.upenn.cit594.data;
 
 public class ParkingViolation{
-	private int fine;
-	private String state, zipCode;
+	int fine;
+	String description, state, zipCode;
 	
 	public ParkingViolation(int fine, String state, String zipCode) {
 		this.fine = fine;

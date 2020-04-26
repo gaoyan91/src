@@ -1,4 +1,6 @@
+/CommandLineUserInterface.class
+/LivableAreaProcessor.class
+/MarketValProcessor.class
 /Processor.class
-/PropertyLivableAreaLoop.class
-/PropertyLoop.class
 /ReaderFactory.class
+/TotalValProcessor.class
