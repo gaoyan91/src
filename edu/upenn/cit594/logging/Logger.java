@@ -36,6 +36,7 @@ public class Logger {
 		String line = "";
 		line += System.currentTimeMillis();
 		for (String each : args) {
+			
 			line += (" " + each);
 		}
 		log(line);
@@ -45,6 +46,13 @@ public class Logger {
 		String line = "";
 		line += System.currentTimeMillis();
 		line += (" " + string);
+		log(line);
+	}
+	
+	public void logString(int number) {
+		String line = "";
+		line += System.currentTimeMillis();
+		line += (" " + Integer.toString(number));
 		log(line);
 	}
 
