@@ -108,6 +108,9 @@ public class Processor {
 			System.out.println("i am here");
 			return cachedAverageLivableArea.get(zipCode);
 		}
+		if (!isValidZipCode(zipCode)) {
+			return 0;
+		}
 		int[] livableArea = getAverageValue(zipCode, new LivableAreaProcessor());
 		int totalArea = livableArea[0];
 		int aveArea = livableArea[1];
@@ -118,6 +121,13 @@ public class Processor {
 
 	private int[] getAverageValue(String zipCode, TotalValProcessor pro) {
 		int[] ret = new int[2];
+		if (!isValidZipCode(zipCode)) {
+			ret[0] = 0;
+			ret[1] = 0;
+			return ret;
+		} else {
+			zipCode = zipCode.substring(0, 5);
+		}
 		int totalVal = 0;
 		int count = 0;
 		for (Property p : propertyValues) {
@@ -136,6 +146,9 @@ public class Processor {
 	}
 
 	public int getMarketValPerCapita(String zipCode) {
+		if (!isValidZipCode(zipCode)) {
+			return 0;
+		}
 		if (!popMap.containsKey(zipCode) || popMap.get(zipCode) == 0) {
 			return 0;
 		}
@@ -208,5 +221,17 @@ public class Processor {
 		}
 		// Find the total fines of that ZIP Code
 		return finesAllZipcode.get(minLivableAreaZip);
+	}
+	
+	private boolean isValidZipCode(String zipCode) {
+		if (zipCode.length() < 5) {
+			return false;
+		}
+		for (int i = 0; i < 5; i++) {
+			if (!Character.isDigit(zipCode.charAt(i))) {
+				return false;
+			}
+		}
+		return true;
 	}
 }

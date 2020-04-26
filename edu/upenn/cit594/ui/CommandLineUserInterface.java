@@ -105,5 +105,4 @@ public class CommandLineUserInterface {
 		Scanner s = new Scanner(System.in);
 		return s.next();
 	}
-	
 }
