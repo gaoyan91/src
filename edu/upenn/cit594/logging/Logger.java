@@ -1,8 +1,8 @@
 package edu.upenn.cit594.logging;
 
-import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintWriter;
-
+import java.io.BufferedWriter;
 public class Logger {
 
 	private static PrintWriter out;
@@ -11,7 +11,7 @@ public class Logger {
 	
 	private Logger(String fileName) {
 		try {
-			out = new PrintWriter(new File(fileName));
+			out = new PrintWriter(new BufferedWriter(new FileWriter(fileName, true)));
 		} catch (Exception e){
 			throw new IllegalStateException(e);
 		}

@@ -40,7 +40,6 @@ public class CSVPropertyReader extends Reader {
 					}
 				}
 			}
-			System.out.println("zipCodeInd: " + zipCodeInd);
 			while (in.hasNext()) {
 				String valueInfo = in.nextLine();
 				String[] value = valueInfo.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");

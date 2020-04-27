@@ -24,10 +24,16 @@ public class CommandLineUserInterface {
 			while (true) {
 				System.out.println("Please specify the action to be performed");
 				Scanner in = new Scanner(System.in);
-				if (in.hasNext()) {
-					actionString = in.next();
+				if (in.hasNextLine()) {
+					actionString = in.nextLine();
 					logger.logString(actionString);
-					int action = Integer.parseInt(actionString);  // TODO: check is numeric and integer; what if is string or non-int
+					int action = 0;
+					try {
+						action = Integer.parseInt(actionString);
+					} catch (NumberFormatException e) {
+						System.out.println("Invalid action");
+						System.exit(0);
+					}
 					if (action < 0 || action > 6) {
 						System.out.println("Invalid action");
 						System.exit(0);
