@@ -34,10 +34,11 @@ protected String parkingFileName;
 				String state = parking[4];
 				String fine = parking[1];
 				String zipCode = parking[6];
-				if (isNumber(state) || !isNumber(fine) || zipCode.length() < 5 || !isNumber(zipCode.substring(0, 5))) {
+				if (isNumber(state) || !isNumber(fine) || zipCode.length() < 5 || 
+					!isNumber(zipCode.substring(0, 5))) {
 					continue;
 				}
-				violations.add(new ParkingViolation(Integer.parseInt(fine), state, zipCode));
+				violations.add(new ParkingViolation(Integer.parseInt(fine), state, zipCode.substring(0, 5)));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

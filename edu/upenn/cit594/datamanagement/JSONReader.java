@@ -35,7 +35,10 @@ public class JSONReader extends Reader {
 				long fineNumber = (Long) jo.get("fine");
 				int fine = (int) fineNumber;
 				String zipCode = (String) jo.get("zip_code");
-				violations.add(new ParkingViolation(fine, state, zipCode));
+				if (zipCode.length() < 5 || !isNumber(zipCode.substring(0, 5))) {
+					continue;
+				}
+				violations.add(new ParkingViolation(fine, state, zipCode.substring(0, 5)));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException("File Not Found Or Cannot Read");

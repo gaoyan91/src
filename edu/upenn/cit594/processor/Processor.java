@@ -134,7 +134,6 @@ public class Processor {
 		} else {
 			totalValAndAverageValue[1] = totalVal / count;
 		}
-		System.out.println("totalVal: "+totalVal+"count: "+count);
 		return totalValAndAverageValue;
 	}
 
@@ -165,7 +164,8 @@ public class Processor {
 	}
 
 	public double getFineofMinLivableAreaPerCapitaZipCode() {
-		// find the total fine of the ZIP Code with the largest livable area per capita
+		// find the total fine per capita of the ZIP Code with 
+		// the minimum livable area per capita
 		if (cachedFineofMaxLivableAreaPerCapitaZipCode >= 0) {
 			return cachedFineofMaxLivableAreaPerCapitaZipCode;
 		}
@@ -177,7 +177,7 @@ public class Processor {
 			finesAllZipcode = getFinesPerCapita();
 			cachedFinePerCapita = finesAllZipcode;
 		}
-		// Calculate the total livable area for each ZIP Code that are existed in all 3
+		// Calculate the total livable area for each ZIP Code that exists in all 3
 		// input data files
 		Map<String, Double> totalLivableAreaMap = new HashMap<>();
 		for (Property p : propertyValues) {
@@ -194,7 +194,7 @@ public class Processor {
 				totalLivableAreaMap.put(zip, p.getTotalLivableArea());
 			}
 		}
-		// Calculate the livable area per capita for each ZIP Code that are existed in
+		// Calculate the livable area per capita for each ZIP Code that exists in
 		// all 3 input data files
 		Map<String, Double> livableAreaPerCapitaMap = new HashMap<>();
 		for (Entry<String, Double> entry : totalLivableAreaMap.entrySet()) {
@@ -212,7 +212,7 @@ public class Processor {
 				minLivableAreaZip = entry.getKey();
 			}
 		}
-		// Find the total fines of that ZIP Code
+		// Find the total fines per capita of that ZIP Code
 		return finesAllZipcode.get(minLivableAreaZip);
 	}
 
