@@ -10,19 +10,19 @@ import org.json.simple.parser.JSONParser;
 
 import edu.upenn.cit594.data.ParkingViolation;
 
-public class JSONReader extends Reader{
+public class JSONReader extends Reader {
 
-protected String parkingFileName;
-	
+	protected String parkingFileName;
+
 	public JSONReader(String fileName) {
 		this.parkingFileName = fileName;
 	}
-	
+
 	@Override
 	public List<ParkingViolation> read() {
 		List<ParkingViolation> violations = new LinkedList<>();
 		JSONParser parser = new JSONParser();
-		
+
 		try {
 			Object obj = parser.parse(new FileReader(parkingFileName));
 			logger.logString(parkingFileName);
@@ -32,8 +32,8 @@ protected String parkingFileName;
 			for (int i = 0; i < array.size(); i++) {
 				JSONObject jo = (JSONObject) array.get(i);
 				String state = (String) jo.get("state");
-				long fineNumber = (Long)jo.get("fine");
-				int fine = (int)fineNumber;
+				long fineNumber = (Long) jo.get("fine");
+				int fine = (int) fineNumber;
 				String zipCode = (String) jo.get("zip_code");
 				violations.add(new ParkingViolation(fine, state, zipCode));
 			}

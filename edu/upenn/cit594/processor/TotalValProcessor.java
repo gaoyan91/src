@@ -4,7 +4,7 @@ import edu.upenn.cit594.data.Property;
 
 public abstract class TotalValProcessor {
 	
-	public abstract int getTotalVal(Property p, int totalVal);
+	public abstract double getTotalVal(Property p, double totalVal);
 	
 	
 }

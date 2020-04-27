@@ -5,14 +5,14 @@ import java.util.*;
 
 import edu.upenn.cit594.data.Property;
 
-public class CSVPropertyReader extends Reader{
+public class CSVPropertyReader extends Reader {
 
-protected String propertyFileName;
-	
+	protected String propertyFileName;
+
 	public CSVPropertyReader(String propertyFileName) {
 		this.propertyFileName = propertyFileName;
 	}
-	
+
 	@Override
 	public List<Property> read() {
 		List<Property> values = new ArrayList<>();
@@ -34,25 +34,25 @@ protected String propertyFileName;
 					if (fields[i].equals("market_value")) {
 						marketValInd = i;
 					} else if (fields[i].equals("total_livable_area")) {
-					    livableAreaInd = i;
+						livableAreaInd = i;
 					} else if (fields[i].equals("zip_code")) {
 						zipCodeInd = i;
 					}
 				}
-				
 			}
+			System.out.println("zipCodeInd: " + zipCodeInd);
 			while (in.hasNext()) {
 				String valueInfo = in.nextLine();
 				String[] value = valueInfo.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
 				String marketValue = value[marketValInd];
 				String totalLivableArea = value[livableAreaInd];
 				String zipCode = value[zipCodeInd];
-				if (!isNumber(marketValue) || !isNumber(totalLivableArea) || 
-					!isNumber(zipCode) || zipCode.length() < 5) {
+				if (!isNumber(marketValue) || !isNumber(totalLivableArea) || zipCode.length() < 5
+						|| !isNumber(zipCode.substring(0, 5))) {
 					continue;
 				}
-				values.add(new Property(Double.parseDouble(marketValue), Double.parseDouble(totalLivableArea), 
-						                zipCode.substring(0, 5)));
+				values.add(new Property(Double.parseDouble(marketValue), Double.parseDouble(totalLivableArea),
+						zipCode.substring(0, 5)));
 			}
 		} catch (Exception e) {
 			throw new IllegalStateException(e);

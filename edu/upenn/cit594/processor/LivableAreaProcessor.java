@@ -5,8 +5,9 @@ import edu.upenn.cit594.data.Property;
 public class LivableAreaProcessor extends TotalValProcessor{
 
 	@Override
-	public int getTotalVal(Property p, int totalVal) {
-		return totalVal += p.getTotalLivableArea();
+	public double getTotalVal(Property p, double totalVal) {
+		totalVal += p.getTotalLivableArea();
+		return totalVal;
 	}
 
 	
