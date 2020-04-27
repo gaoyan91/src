@@ -103,7 +103,7 @@ public class CommandLineUserInterface {
 	}
 	
 	private void displayFineofMinLivableAreaPerCapitaZipCode() {
-		System.out.println("Here is the total fine of max livable area per capita ZIP Code: "+ processor.getFineofMinLivableAreaPerCapitaZipCode());
+		System.out.println("Here is the total fine per capita of ZIP Code with min livable area per capita : "+ processor.getFineofMinLivableAreaPerCapitaZipCode());
 	}
 	
 	private String requestZipCode() {
